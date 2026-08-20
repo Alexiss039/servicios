@@ -72,13 +72,18 @@ Complete la tabla:
 
   Recurso   Tipo   Dominio     Tamaño
   --------- ------ --------- --------
-                             
-                             
-                             
-                             
+  https://www.itm.edu.co/formatos-institucionales/  document  https://www.itm.edu.co/     93.5 KB
+  
+  https://www.googletagmanager.com/gtm.js?id=GTM-T3PQ5L7 script  https://www.itm.edu.co/   3.7 KB
+
+  https://www.itm.edu.co//wp-content/uploads/2021/09/05-Internacionalizacion.gif  image/gif  https://www.itm.edu.co/  DISK CACHE
+
+  https://use.fontawesome.com/releases/v6.7.2/css/all.css?ver=7.0.4  stylesheet  https://www.itm.edu.co/ DISK CACHE
+
+  https://www.itm.edu.co/wp-content/uploads/2021/04/aspirante-300x300.png PNG  https://www.itm.edu.co/ DISK CACHE                         
                              
 
-**Total de solicitudes observadas:** `_____`
+**Total de solicitudes observadas:** `5`
 
 ## Evidencia
 
@@ -98,7 +103,7 @@ Inclúyala aquí:
 
 **¿Por qué una sola URL puede generar múltiples solicitudes HTTP?**
 
-> Escriba aquí su respuesta.
+> cuando el navegador solicita una url realmente solo muestra el html principal como primer respuesta ese html actua como un mapa que referencia otros recursos necesarios para renderizar la pagina completa, como archivos de css, imagenes, javascript, etc.
 
 ------------------------------------------------------------------------
 
@@ -111,12 +116,12 @@ Identifique la información solicitada a continuación.
 
   Elemento              Resultado
   --------------------- -----------
-  URL                   
-  Método HTTP           
-  Código de estado      
-  Host / dominio        
-  Tipo de recurso       
-  Tiempo de respuesta   
+  URL                   https://www.itm.edu.co/wp-content/uploads/2021/04/aspirante-300x300.png     
+  Método HTTP           GET
+  Código de estado      200
+  Host / dominio        https://www.itm.edu.co/formatos-institucionales/
+  Tipo de recurso       image/png
+  Tiempo de respuesta   3.31 MS
 
 ## Flujo que se está observando
 
@@ -146,12 +151,12 @@ Inclúyala en el informe:
 
 **¿Qué recurso solicitó el navegador?**
 
-> Escriba aquí su respuesta.
+> solicito el recurso de una imagen
 
 **¿Qué información permite determinar si la solicitud fue atendida
 correctamente?**
 
-> Escriba aquí su respuesta.
+> el codigo de estado, pues cuando es 200 quiere decir que fue exitoso
 
 ------------------------------------------------------------------------
 
@@ -176,13 +181,13 @@ Utilizando **Elementos / Elements**:
 
 ## Resultados
 
-**Elemento seleccionado:** `____________________________`
+**Elemento seleccionado:** `titulo con etiqueta h3 llamado Logos ITM`
 
-**Etiqueta HTML:** `____________________________`
+**Etiqueta HTML:** `h3`
 
-**Contenido original:** `____________________________`
+**Contenido original:** `Logos ITM`
 
-**Modificación realizada:** `____________________________`
+**Modificación realizada:** `Logos prueba`
 
 El proceso observado puede representarse conceptualmente así:
 
@@ -213,7 +218,7 @@ Inclúyala aquí:
 **¿La modificación realizada sobre el DOM alteró permanentemente la
 aplicación o los archivos almacenados en el servidor? Justifique.**
 
-> Escriba aquí su respuesta.
+> La modificación que se hizo no modifico permanente la aplicacion ni los archivos almacenados, por que solo esta renderizando el html en el navegador de mi equipo, entonces al yo modificarlo desde la opcion de inspeccionar elemento realmente no afecta la aplicacion ni a los demas usuarios que la utilizan, es solo temporal y solo se puede visualizar en mi equipo la modificacion
 
 ------------------------------------------------------------------------
 
@@ -236,12 +241,12 @@ Observe si aparece una nueva solicitud en Network.
 
   Elemento                       Resultado
   ------------------------------ -----------
-  Acción realizada               
-  ¿Generó una nueva solicitud?   
-  URL solicitada                 
-  Método HTTP                    
-  Código de estado               
-  Tipo de respuesta              
+  Acción realizada               Descargar los logos del ITM
+  ¿Generó una nueva solicitud?   si
+  URL solicitada                 https://analytics.google.com/g/collect?v=2&tid=G-B94JQ2LRPV&gtm=45je68i1v882900881za200zb9177264783zd9177264783&_p=1787191167312&_gaz=1&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAGQ&ae=a&cid=1881092018.1787191169&frm=0&lps=1&pscdl=noapi&rcb=16&sr=1536x864&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CBrave%3B151.0.0.0%7CChromium%3B151.0.0.0&uam=&uamb=0&uap=Windows&uapv=10.0.0&uaw=0&ul=es-es&gaf=2&_s=3&tag_exp=115938465~115938469~118897920~118897930~119367802~119367810~120315471~120385422&sid=1787191171&sct=1&seg=1&dl=https%3A%2F%2Fwww.itm.edu.co%2Fformatos-institucionales%2F&dr=https%3A%2F%2Fwww.google.com%2F&dt=Formatos%20Institucionales%20%E2%80%93%20ITM&en=file_download&ep.link_id=&ep.link_url=https%3A%2F%2Fwww.itm.edu.co%2Fwp-content%2Fuploads%2Fformatos%2Flogos2026.zip&ep.link_text=Descargar&ep.file_name=%2Fwp-content%2Fuploads%2Fformatos%2Flogos2026.zip&ep.file_extension=zip&_et=7291&tfd=67880
+  Método HTTP                    POST 
+  Código de estado               204
+  Tipo de respuesta              text/plain
 
 ## Ciclo de interacción
 
@@ -277,7 +282,9 @@ Inclúyala aquí:
 **Explique la relación entre la acción realizada por el usuario y la
 solicitud observada.**
 
-> Escriba aquí su respuesta.
+> La acción del usuario (hacer clic en "Descargar" sobre el archivo `logos2026.zip`) no generó directamente la descarga como solicitud principal visible en este registro, sino que disparó un **evento de seguimiento (tracking)** hacia Google Analytics (`analytics.google.com/g/collect`). Esto ocurre porque el sitio del ITM tiene integrado Google Analytics (identificable por el parámetro `tid=G-B94JQ2LRPV`, un ID de medición de GA4), configurado para capturar automáticamente eventos de descarga de archivos.
+> Al hacer clic en el enlace de descarga, JavaScript en la página detectó el evento `file_download` y, antes o en paralelo a iniciar la descarga real del archivo, envió esta solicitud POST a Analytics para registrar el comportamiento del usuario. E
+> El código de estado **204 (No Content)** es típico de este tipo de solicitudes: Analytics confirma que recibió el evento, pero no necesita devolver ningún contenido en la respuesta, solo un acuse de recibo vacío. Esto demuestra que, en aplicaciones web reales, una sola acción del usuario (clic en un botón) puede generar múltiples solicitudes en paralelo: la descarga real del archivo por un lado, y solicitudes de analítica/monitoreo por otro, invisibles para el usuario pero fundamentales para que la organización entienda cómo se usa su sitio.
 
 ------------------------------------------------------------------------
 
@@ -296,9 +303,17 @@ El diagrama deberá incluir, cuando corresponda:
 
 Reemplace el siguiente bloque con su diagrama:
 
-``` mermaid
-flowchart LR
-    A[Construya aquí] --> B[su flujo observado]
+```mermaid
+flowchart TD
+    U[Usuario] -->|clic en 'Descargar' logos2026.zip| N[Navegador]
+    N -->|dispara evento file_download| J[JavaScript / Google Tag Manager]
+    J -->|Solicitud HTTP POST /g/collect| S[Servidor Analytics]
+    S -->|Respuesta HTTP 204 No Content| J
+    N -->|Solicitud HTTP GET del archivo| SW[Servidor ITM]
+    SW -->|Respuesta HTTP 200 con logos2026.zip| N
+    N -->|actualiza| D[DOM]
+    D --> I[Interfaz: archivo descargado]
+    I --> U
 ```
 
 ------------------------------------------------------------------------
@@ -312,15 +327,15 @@ Clasifique sus hallazgos:
 
 ## Elementos observados directamente
 
--   
--   
--   
+-   Las solicitudes HTTP generadas al cargar la página (documento HTML, CSS, JavaScript, imágenes, fuentes) junto con su método, código de estado y tamaño, visibles en la pestaña Network.
+-   La estructura del DOM y la etiqueta HTML (`h3`) del elemento "Logos ITM", así como el cambio visual inmediato al modificar su contenido desde Elements.
+-   La solicitud POST enviada a `analytics.google.com/g/collect` tras hacer clic en "Descargar", incluyendo su URL completa, código de respuesta (204) y tipo de contenido (`text/plain`). 
 
 ## Elementos inferidos
 
--   
--   
--   
+-   Que la solicitud a Analytics corresponde a un evento de seguimiento (`file_download`) configurado a través de Google Tag Manager, deducido a partir de los parámetros de la URL (`tid`, `en=file_download`, `ep.file_name`), no observado como código fuente ejecutándose.
+-   Que el servidor del ITM procesó y sirvió el archivo `logos2026.zip` correctamente, ya que el navegador no expone directamente los procesos internos del servidor (lógica de negocio, base de datos, etc.), solo la respuesta HTTP recibida.
+-   Que la modificación del DOM mediante Elements es completamente local y no se sincroniza con otros usuarios ni con el servidor; esto se infiere del conocimiento general de cómo funciona el navegador, ya que las herramientas de desarrollo no permiten comprobar directamente qué ven otros usuarios en simultáneo. 
 
 > No presente como observado un proceso interno que las herramientas del
 > navegador no permitan comprobar directamente.
@@ -331,9 +346,11 @@ Clasifique sus hallazgos:
 
 Redacte **tres conclusiones técnicas** derivadas de la práctica.
 
-1.  
-2.  
-3.  
+1.  Una aplicación web no se entrega al navegador como un único bloque, sino como un conjunto de recursos independientes (HTML, CSS, JavaScript, imágenes, fuentes) que se solicitan y ensamblan progresivamente; esto explica por qué cargar una sola URL puede generar decenas de solicitudes HTTP, cada una con su propio dominio, tamaño y tiempo de respuesta.
+
+2.  El DOM que se ve y manipula en el navegador es una representación local y volátil de la página, completamente desacoplada del código fuente almacenado en el servidor. Modificar un elemento desde las herramientas de desarrollo no altera la aplicación real ni afecta a otros usuarios, lo que evidencia la separación entre lo que el cliente renderiza y lo que el servidor efectivamente almacena y distribuye.
+
+3.  Las interacciones del usuario (como hacer clic en un botón) pueden desencadenar múltiples solicitudes en paralelo con propósitos distintos: unas orientadas a cumplir la acción solicitada (descargar un archivo) y otras orientadas a recolectar datos de comportamiento (analítica de terceros como Google Analytics). Esto demuestra que el tráfico observado en Network no siempre corresponde uno a uno con la funcionalidad visible, y que gran parte del ecosistema de una aplicación web real ocurre de forma invisible para el usuario final.
 
 Las conclusiones deben explicar lo aprendido a partir de la evidencia y
 no limitarse a describir las actividades realizadas.
