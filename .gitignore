@@ -48,6 +48,9 @@ htmlcov/
 # IDEs and editors
 .idea/
 .vscode/
+*.code-workspace
+.history/
+.vscode-test/
 *.swp
 *.swo
 *~

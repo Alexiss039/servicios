@@ -1,227 +1,97 @@
-# Clase 6 - FASTAPI
+# Clase 7 - ORM con FastAPI y PostgreSQL
 
-## Objetivo de la clase
+## Tema
 
-Construir una API para gestionar estudiantes utilizando FastAPI y Pydantic. Se implementarán las operaciones HTTP fundamentales para crear, consultar, actualizar y eliminar datos almacenados temporalmente en memoria.
+En esta clase conectamos una API de FastAPI con PostgreSQL usando un ORM.
 
-## Generalidades de FastAPI
+## ¿Qué es un ORM?
 
-FastAPI es un framework moderno de Python para construir APIs web. Permite definir rutas con decoradores, validar automáticamente los datos recibidos y generar documentación interactiva con OpenAPI y Swagger UI.
+ORM significa **Object Relational Mapping**. Permite trabajar con una base de datos usando clases y objetos de Python.
 
-Como complemento sobre la historia y evolución de FastAPI, consulte el siguiente video:
+- Una clase representa una tabla.
+- Un atributo representa una columna.
+- Un objeto representa un registro.
+- SQLAlchemy es el ORM utilizado en este proyecto.
 
-[Historia de FastAPI](https://www.youtube.com/watch?v=mpR8ngthqiE)
+## Estructura del proyecto
 
-## Modelo de datos con Pydantic
-
-El proyecto utiliza un modelo Pydantic para validar la información de cada estudiante:
-
-```python
-class Estudiante(BaseModel):
-    nombre: str
-    edad: int
-    programa: str
+```text
+main.py              Inicio de FastAPI
+database.py          Conexión y sesiones de PostgreSQL
+models/              Modelos ORM que representan tablas
+schemas/             Validación de datos con Pydantic
+crud/                Operaciones de base de datos
+api/                 Rutas o endpoints
+requirements.txt     Dependencias
+.env.example         Ejemplo de variables de entorno
 ```
 
-Cada estudiante debe tener un nombre de texto, una edad numérica y el nombre de un programa académico.
+## Función de cada carpeta
 
-Los estudiantes se guardan en la variable `dataset_estudiantes`, que es una lista principal. Cada estudiante se representa como una lista secundaria:
+- `models/`: contiene las clases de SQLAlchemy.
+- `schemas/`: valida los datos recibidos y enviados por la API.
+- `crud/`: contiene las operaciones de crear, consultar, actualizar y eliminar.
+- `api/`: contiene las rutas que puede consumir el usuario.
+- `database.py`: configura la conexión y las sesiones de la base de datos.
 
-```python
-dataset_estudiantes = [
-    ["Ana Gómez", 20, "Ingeniería de Sistemas"],
-    ["Carlos Pérez", 22, "Diseño Industrial"]
-]
-```
+## Configuración
 
-Esta información se almacena únicamente en memoria. Por lo tanto, se pierde cuando se detiene o reinicia el servidor.
-
-## Iniciar el servidor
-
-Active el entorno virtual e instale las dependencias:
+Crear el archivo local de variables de entorno:
 
 ```bash
-python3 -m venv venv
-source venv/bin/activate
+cp .env.example .env
+```
+
+Completar `.env` con los datos reales de PostgreSQL. Este archivo no debe subirse a Git.
+
+Instalar dependencias y ejecutar la API:
+
+```bash
 pip install -r requirements.txt
-```
-
-En Windows puede utilizar:
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-Ejecute la aplicación con Uvicorn:
-
-```bash
 uvicorn main:app --reload
 ```
 
-El servidor quedará disponible en `http://127.0.0.1:8000`.
-
-## Documentación Swagger
-
-FastAPI genera automáticamente la documentación interactiva en:
+La documentación está disponible en:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-Para probar una operación:
-
-1. Seleccione la operación que desea ejecutar.
-2. Haga clic en **Try it out**.
-3. Escriba los datos solicitados.
-4. Haga clic en **Execute**.
-5. Revise el código y el cuerpo de la respuesta.
-
-## Peticiones de la API
-
-### GET `/`
-
-Esta es la ruta inicial de la aplicación. Sirve para comprobar que el servidor está funcionando.
-
-Respuesta:
-
-```json
-{
-  "message": "Hola mundo"
-}
-```
-
-### POST `/estudiantes`
-
-Agrega un nuevo estudiante al dataset. El cuerpo de la petición debe incluir todos los campos definidos en el modelo `Estudiante`.
-
-Ejemplo de solicitud:
-
-```json
-{
-  "nombre": "Ana Gómez",
-  "edad": 20,
-  "programa": "Ingeniería de Sistemas"
-}
-```
-
-Internamente, el estudiante se convierte en una lista y se agrega al dataset:
-
-```text
-["Ana Gómez", 20, "Ingeniería de Sistemas"]
-```
-
-Respuesta esperada:
-
-```json
-{
-  "message": "Estudiante agregado correctamente",
-  "estudiante": ["Ana Gómez", 20, "Ingeniería de Sistemas"],
-  "dataset": [
-    ["Ana Gómez", 20, "Ingeniería de Sistemas"]
-  ]
-}
-```
-
-Cada vez que se ejecuta el POST, el dataset completo también se imprime en la consola del servidor.
-
-### PUT `/estudiantes/{indice}`
-
-Reemplaza completamente un estudiante existente. El parámetro `indice` indica la posición del estudiante dentro del dataset. El primer estudiante tiene índice `0`, el segundo índice `1`, y así sucesivamente.
-
-Ejemplo para reemplazar el primer estudiante:
-
-```text
-PUT /estudiantes/0
-```
-
-Cuerpo de la solicitud:
-
-```json
-{
-  "nombre": "Ana Rodríguez",
-  "edad": 21,
-  "programa": "Ingeniería de Software"
-}
-```
-
-El PUT exige los tres campos y reemplaza completamente la lista que se encuentra en la posición indicada.
-
-### PATCH `/estudiantes/{indice}`
-
-Actualiza parcialmente un estudiante. A diferencia de PUT, solo es necesario enviar los campos que se desean modificar.
-
-Ejemplo para cambiar únicamente el programa del primer estudiante:
-
-```text
-PATCH /estudiantes/0
-```
-
-Cuerpo de la solicitud:
-
-```json
-{
-  "programa": "Ingeniería de Datos"
-}
-```
-
-También se pueden actualizar varios campos:
-
-```json
-{
-  "nombre": "Ana Rodríguez",
-  "edad": 22
-}
-```
-
-Los campos no enviados conservan su valor original. Este comportamiento se logra con el modelo `EstudianteActualizacion` y `exclude_unset=True`.
-
-### DELETE `/estudiantes/{indice}`
-
-Elimina el estudiante ubicado en la posición indicada.
-
-Ejemplo para eliminar el primer estudiante:
-
-```text
-DELETE /estudiantes/0
-```
-
-La lista se elimina del dataset y los estudiantes que estaban después de ella ocupan una nueva posición.
-
-## Validación y errores
-
-Pydantic valida automáticamente los datos recibidos. Por ejemplo, `edad` debe ser un número entero y los campos de texto deben enviarse como cadenas.
-
-Si se utiliza un índice que no existe, la API responde:
-
-```json
-{
-  "error": "El estudiante no existe"
-}
-```
-
-Después de cada POST, PUT, PATCH o DELETE, el contenido actualizado del dataset se imprime en la consola del servidor.
-
-## Resumen de operaciones
+## Endpoints de estudiantes
 
 | Método | Ruta | Función |
 |---|---|---|
-| GET | `/` | Verificar que el servidor funciona |
-| POST | `/estudiantes` | Agregar un estudiante |
-| PUT | `/estudiantes/{indice}` | Reemplazar todos los datos |
-| PATCH | `/estudiantes/{indice}` | Actualizar algunos datos |
-| DELETE | `/estudiantes/{indice}` | Eliminar un estudiante |
+| GET | `/estudiantes` | Listar estudiantes |
+| GET | `/estudiantes/{id}` | Consultar un estudiante |
+| POST | `/estudiantes` | Crear un estudiante |
+| PUT | `/estudiantes/{id}` | Reemplazar un estudiante |
+| PATCH | `/estudiantes/{id}` | Actualizar parcialmente |
+| DELETE | `/estudiantes/{id}` | Eliminar un estudiante |
+| GET | `/health/db` | Verificar la conexión |
 
-## Actividad propuesta
+## Tarea: implementar mediciones
 
-Amplíe la API para consultar un estudiante por su identificador.
+La base de datos ya contiene la tabla `public.mediciones`. No se debe crear otra tabla ni cambiar su estructura.
 
-1. Agregue el campo `id` al modelo `Estudiante`.
-2. Modifique la estructura del dataset para guardar el identificador de cada estudiante.
-3. Cree una operación `GET /estudiantes/{id}` que busque y retorne únicamente el estudiante solicitado.
-4. Pruebe la operación desde Swagger UI con estudiantes existentes y con un ID que no exista.
-5. Documente el nuevo endpoint en el README.
-6. Publique los cambios en su repositorio de la clase.
+### Estructura de la tabla
 
-La respuesta para un ID existente debe incluir los datos del estudiante. Para un ID inexistente, la API debe responder un mensaje indicando que el estudiante no fue encontrado.
+| Columna | Tipo | Obligatoria | Descripción |
+|---|---|---|---|
+| `id` | integer | Sí | Identificador principal |
+| `estudiante_id` | integer | Sí | Estudiante relacionado |
+| `variable` | varchar(50) | Sí | Nombre de la medición |
+| `valor` | numeric | Sí | Valor registrado |
+| `unidad` | varchar(20) | Sí | Unidad del valor |
+| `fecha_hora` | timestamp with time zone | Sí | Fecha y hora de la medición |
+
+`estudiante_id` es una llave foránea que apunta a `estudiantes.id`. Para crear una medición se debe utilizar un estudiante existente.
+
+### Orden de implementación
+
+1. **Pydantic:** crear los schemas de entrada, actualización y respuesta.
+2. **ORM:** crear en `models/` la clase que represente `mediciones` y su relación con `estudiantes`.
+3. **CRUD:** crear en `crud/` las funciones para listar, consultar, crear, actualizar y eliminar.
+4. **API:** crear en `api/` los endpoints que utilicen las funciones CRUD.
+5. **Pruebas:** probar todas las operaciones desde Swagger en `/docs`.
+
+La API debe permitir listar, consultar, crear, actualizar y eliminar mediciones.
