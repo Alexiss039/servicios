@@ -1,6 +1,9 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import Optional
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+from api.estudiantes import router as estudiantes_router
+from api.mediciones import router as mediciones_router
+from database import SessionLocal
 
 
 app = FastAPI()
