@@ -100,31 +100,60 @@ Ejemplo de solicitud:
 
 ```json
 {
+  "id": 101,
   "nombre": "Ana Gómez",
   "edad": 20,
   "programa": "Ingeniería de Sistemas"
 }
 ```
 
-Internamente, el estudiante se convierte en una lista y se agrega al dataset:
+Internamente, el estudiante se convierte en una lista (el identificador es el primer elemento) y se agrega al dataset:
 
 ```text
-["Ana Gómez", 20, "Ingeniería de Sistemas"]
+[101, "Ana Gómez", 20, "Ingeniería de Sistemas"]
 ```
+
+El `id` debe ser único. Si ya existe un estudiante con ese `id`, la API responde `{"error": "Ya existe un estudiante con ese id"}`.
 
 Respuesta esperada:
 
 ```json
 {
   "message": "Estudiante agregado correctamente",
-  "estudiante": ["Ana Gómez", 20, "Ingeniería de Sistemas"],
+  "estudiante": [101, "Ana Gómez", 20, "Ingeniería de Sistemas"],
   "dataset": [
-    ["Ana Gómez", 20, "Ingeniería de Sistemas"]
+    [101, "Ana Gómez", 20, "Ingeniería de Sistemas"]
   ]
 }
 ```
 
 Cada vez que se ejecuta el POST, el dataset completo también se imprime en la consola del servidor.
+
+### GET `/estudiantes/{id}`
+
+Consulta un único estudiante a partir de su identificador (`id`). A diferencia de PUT, PATCH y DELETE, este parámetro no es la posición en la lista sino el `id` guardado en el estudiante.
+
+Ejemplo:
+
+```text
+GET /estudiantes/101
+```
+
+Respuesta para un `id` existente:
+
+```json
+{
+  "estudiante": [101, "Ana Gómez", 20, "Ingeniería de Sistemas"]
+}
+```
+
+Respuesta para un `id` que no existe:
+
+```json
+{
+  "error": "Estudiante no encontrado"
+}
+```
 
 ### PUT `/estudiantes/{indice}`
 
@@ -140,13 +169,14 @@ Cuerpo de la solicitud:
 
 ```json
 {
+  "id": 101,
   "nombre": "Ana Rodríguez",
   "edad": 21,
   "programa": "Ingeniería de Software"
 }
 ```
 
-El PUT exige los tres campos y reemplaza completamente la lista que se encuentra en la posición indicada.
+El PUT exige todos los campos (incluido el `id`) y reemplaza completamente la lista que se encuentra en la posición indicada. Si el `id` enviado pertenece a otro estudiante, la API responde con un error.
 
 ### PATCH `/estudiantes/{indice}`
 
@@ -175,7 +205,7 @@ También se pueden actualizar varios campos:
 }
 ```
 
-Los campos no enviados conservan su valor original. Este comportamiento se logra con el modelo `EstudianteActualizacion` y `exclude_unset=True`.
+Los campos no enviados conservan su valor original. El `id` no se modifica con PATCH. Este comportamiento se logra con el modelo `EstudianteActualizacion` y `exclude_unset=True`.
 
 ### DELETE `/estudiantes/{indice}`
 
@@ -209,6 +239,7 @@ Después de cada POST, PUT, PATCH o DELETE, el contenido actualizado del dataset
 |---|---|---|
 | GET | `/` | Verificar que el servidor funciona |
 | POST | `/estudiantes` | Agregar un estudiante |
+| GET | `/estudiantes/{id}` | Consultar un estudiante por su id |
 | PUT | `/estudiantes/{indice}` | Reemplazar todos los datos |
 | PATCH | `/estudiantes/{indice}` | Actualizar algunos datos |
 | DELETE | `/estudiantes/{indice}` | Eliminar un estudiante |
