@@ -95,3 +95,30 @@ La base de datos ya contiene la tabla `public.mediciones`. No se debe crear otra
 5. **Pruebas:** probar todas las operaciones desde Swagger en `/docs`.
 
 La API debe permitir listar, consultar, crear, actualizar y eliminar mediciones.
+
+### Endpoints de mediciones
+
+| Método | Ruta | Función |
+|---|---|---|
+| GET | `/mediciones` | Listar mediciones |
+| GET | `/mediciones/{id}` | Consultar una medición |
+| POST | `/mediciones` | Crear una medición |
+| PUT | `/mediciones/{id}` | Reemplazar una medición |
+| PATCH | `/mediciones/{id}` | Actualizar parcialmente |
+| DELETE | `/mediciones/{id}` | Eliminar una medición |
+
+Ejemplo de cuerpo para `POST /mediciones`:
+
+```json
+{
+  "estudiante_id": 1,
+  "variable": "temperatura",
+  "valor": 36.6,
+  "unidad": "C",
+  "fecha_hora": "2026-09-30T20:00:00-05:00"
+}
+```
+
+Si `estudiante_id` no corresponde a un estudiante existente, la API responde 404 con `El estudiante no existe`. Si la medición no existe, responde 404 con `La medición no existe`.
+
+Archivos agregados: `schemas/medicion.py`, `models/medicion.py`, `crud/medicion.py` y `api/mediciones.py`. El router se registra en `main.py`.

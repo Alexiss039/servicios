@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import Base
 
 class Estudiante(Base):
@@ -10,3 +10,5 @@ class Estudiante(Base):
     correo: Mapped[str] = mapped_column(String(200), nullable=False)
     programa: Mapped[str] = mapped_column(String(200), nullable=False)
     grupo: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    mediciones = relationship("Medicion", back_populates="estudiante")
