@@ -1,124 +1,120 @@
-# Clase 7 - ORM con FastAPI y PostgreSQL
+# Clase 7: Autenticación y Autorización con JWT
 
-## Tema
+## Objetivo
 
-En esta clase conectamos una API de FastAPI con PostgreSQL usando un ORM.
+Construir una aplicación web básica con FastAPI que permita autenticar usuarios mediante tokens JWT y controlar el acceso a las operaciones de la API utilizando roles y scopes.
 
-## ¿Qué es un ORM?
+Al finalizar la actividad, el estudiante podrá:
 
-ORM significa **Object Relational Mapping**. Permite trabajar con una base de datos usando clases y objetos de Python.
+- Crear una API con FastAPI.
+- Registrar e iniciar sesión con usuarios.
+- Generar y validar tokens JWT.
+- Diferenciar autenticación de autorización.
+- Proteger endpoints según los permisos del usuario.
 
-- Una clase representa una tabla.
-- Un atributo representa una columna.
-- Un objeto representa un registro.
-- SQLAlchemy es el ORM utilizado en este proyecto.
+## Marco teórico
 
-## Estructura del proyecto
+La autenticación verifica quién es el usuario. La autorización determina qué acciones puede realizar después de iniciar sesión.
+
+JWT —JSON Web Token— es un token firmado que contiene información sobre el usuario y sus permisos. El cliente envía el token en el encabezado de las solicitudes:
 
 ```text
-main.py              Inicio de FastAPI
-database.py          Conexión y sesiones de PostgreSQL
-models/              Modelos ORM que representan tablas
-schemas/             Validación de datos con Pydantic
-crud/                Operaciones de base de datos
-api/                 Rutas o endpoints
-requirements.txt     Dependencias
-.env.example         Ejemplo de variables de entorno
+Authorization: Bearer <token>
 ```
 
-## Función de cada carpeta
+En este proyecto se utilizan dos roles:
 
-- `models/`: contiene las clases de SQLAlchemy.
-- `schemas/`: valida los datos recibidos y enviados por la API.
-- `crud/`: contiene las operaciones de crear, consultar, actualizar y eliminar.
-- `api/`: contiene las rutas que puede consumir el usuario.
-- `database.py`: configura la conexión y las sesiones de la base de datos.
+- `reader`: puede consultar información mediante el scope `read`.
+- `editor`: puede consultar y modificar información mediante los scopes `read` y `write`.
 
-## Configuración
+## ¿Qué tiene el proyecto?
 
-Crear el archivo local de variables de entorno:
+```text
+.
+├── backend/
+│   ├── auth.py          # Hash de contraseñas, JWT y scopes
+│   ├── database.py      # Conexión con SQLite
+│   ├── main.py          # Rutas de la API
+│   ├── models.py        # Modelos Usuario e Item
+│   └── schemas.py       # Esquemas de validación
+├── requirements.txt     # Dependencias de Python
+└── .env.example         # Variables de configuración
+```
+
+La base de datos utilizada es SQLite. Se crea automáticamente como `app.db` al iniciar la aplicación.
+
+## Clonar y ejecutar en la máquina local
+
+Requisitos:
+
+- Python 3.10 o superior.
+- Git.
+
+Clonar el repositorio y entrar a la carpeta:
 
 ```bash
-cp .env.example .env
+git clone URL_DEL_REPOSITORIO
+cd NOMBRE_DEL_REPOSITORIO
 ```
 
-Completar `.env` con los datos reales de PostgreSQL. Este archivo no debe subirse a Git.
+Crear y activar el entorno virtual:
 
-Instalar dependencias y ejecutar la API:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+En Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Instalar las dependencias y configurar las variables:
 
 ```bash
 pip install -r requirements.txt
-uvicorn main:app --reload
+cp .env.example .env
 ```
 
-La documentación está disponible en:
+En Windows, copiar `.env.example` manualmente como `.env` si el comando `cp` no está disponible.
 
-```text
-http://127.0.0.1:8000/docs
+Iniciar la API:
+
+```bash
+uvicorn backend.main:app --reload
 ```
 
-## Endpoints de estudiantes
+La API y su documentación estarán disponibles en:
 
-| Método | Ruta | Función |
-|---|---|---|
-| GET | `/estudiantes` | Listar estudiantes |
-| GET | `/estudiantes/{id}` | Consultar un estudiante |
-| POST | `/estudiantes` | Crear un estudiante |
-| PUT | `/estudiantes/{id}` | Reemplazar un estudiante |
-| PATCH | `/estudiantes/{id}` | Actualizar parcialmente |
-| DELETE | `/estudiantes/{id}` | Eliminar un estudiante |
-| GET | `/health/db` | Verificar la conexión |
+- API: <http://127.0.0.1:8000>
+- Documentación: <http://127.0.0.1:8000/docs>
 
-## Tarea: implementar mediciones
+Desde `/docs` se puede registrar un usuario, iniciar sesión y probar los endpoints protegidos. Para el login se debe usar el formulario OAuth2 disponible en la documentación.
 
-La base de datos ya contiene la tabla `public.mediciones`. No se debe crear otra tabla ni cambiar su estructura.
+## Subir el proyecto a un repositorio propio
 
-### Estructura de la tabla
+Crear una nueva rama llamada `clase-7`:
 
-| Columna | Tipo | Obligatoria | Descripción |
-|---|---|---|---|
-| `id` | integer | Sí | Identificador principal |
-| `estudiante_id` | integer | Sí | Estudiante relacionado |
-| `variable` | varchar(50) | Sí | Nombre de la medición |
-| `valor` | numeric | Sí | Valor registrado |
-| `unidad` | varchar(20) | Sí | Unidad del valor |
-| `fecha_hora` | timestamp with time zone | Sí | Fecha y hora de la medición |
-
-`estudiante_id` es una llave foránea que apunta a `estudiantes.id`. Para crear una medición se debe utilizar un estudiante existente.
-
-### Orden de implementación
-
-1. **Pydantic:** crear los schemas de entrada, actualización y respuesta.
-2. **ORM:** crear en `models/` la clase que represente `mediciones` y su relación con `estudiantes`.
-3. **CRUD:** crear en `crud/` las funciones para listar, consultar, crear, actualizar y eliminar.
-4. **API:** crear en `api/` los endpoints que utilicen las funciones CRUD.
-5. **Pruebas:** probar todas las operaciones desde Swagger en `/docs`.
-
-La API debe permitir listar, consultar, crear, actualizar y eliminar mediciones.
-
-### Endpoints de mediciones
-
-| Método | Ruta | Función |
-|---|---|---|
-| GET | `/mediciones` | Listar mediciones |
-| GET | `/mediciones/{id}` | Consultar una medición |
-| POST | `/mediciones` | Crear una medición |
-| PUT | `/mediciones/{id}` | Reemplazar una medición |
-| PATCH | `/mediciones/{id}` | Actualizar parcialmente |
-| DELETE | `/mediciones/{id}` | Eliminar una medición |
-
-Ejemplo de cuerpo para `POST /mediciones`:
-
-```json
-{
-  "estudiante_id": 1,
-  "variable": "temperatura",
-  "valor": 36.6,
-  "unidad": "C",
-  "fecha_hora": "2026-09-30T20:00:00-05:00"
-}
+```bash
+git checkout -b clase-7
 ```
 
-Si `estudiante_id` no corresponde a un estudiante existente, la API responde 404 con `El estudiante no existe`. Si la medición no existe, responde 404 con `La medición no existe`.
+Agregar los archivos y crear el commit:
 
-Archivos agregados: `schemas/medicion.py`, `models/medicion.py`, `crud/medicion.py` y `api/mediciones.py`. El router se registra en `main.py`.
+```bash
+git add .
+git commit -m "Implementa clase 7: autenticacion y autorizacion con JWT"
+```
+
+En GitHub, crear un repositorio propio vacío. Luego asociarlo como remoto y subir la rama:
+
+```bash
+git remote add origin URL_DE_TU_REPOSITORIO
+git push -u origin clase-7
+```
+
+Verificar en GitHub que la rama `clase-7` y todos los archivos estén disponibles.
+
+No se debe subir el archivo `.env`, porque puede contener secretos. El archivo `.env.example` sí debe permanecer en el repositorio.
