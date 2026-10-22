@@ -22,7 +22,7 @@ from validacion import validar_registro
 
 # --- Configuracion del equipo (definir aqui los valores asignados) ---
 URL_BASE = "https://appsweb.quantaiot.co"
-EQUIPO = "EQUIPO-14-APPSWEB"
+EQUIPO = "CAMBIAR_IDENTIFICADOR_DE_EQUIPO"
 # -----------------------------------------------------------------------
 
 BASE_DIR = Path(__file__).resolve().parent
